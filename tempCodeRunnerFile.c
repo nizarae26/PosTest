@@ -15,12 +15,12 @@ typedef struct
     char nama[50];
 } Member;
 
-void tampilanWelcome(Produk *produk, int total_produk);
+void tampilanWelcome(Produk *produk);
 void tampilanRingkasan(char name[]);
 void ringkasanBarang(Produk *produk, int *jumlah, int total_barang);
 int validasiMember(char *kodeMember, Member *member, int jumlahMember);
 void daftarMember(Member *member, int *jumlahMember);
-void tampilStruk(char name[], Produk *produk, int *jumlah, int total_barang, int total_qty, float grand_total, float total_pembayaran, float kembalian);
+void tampilStruk();
 void ringkasanBarangStruk(char name[], Produk *produk, int *jumlah, int total_barang);
 
 int main()
@@ -36,43 +36,41 @@ int main()
     int jumlahMember = 0; // Jumlah member terdaftar
 
     int jumlah[50] = {0};
-    float total_harga = 0, diskon, pembayaran, kembalian, kuranganBayar;
+    float total_harga = 0, diskon, pembayaran, kembalian;
     int total_barang = 0;
     int jumlah_barang;
     char kar;
 
 ulangi:
 
-    tampilanWelcome(produk, sizeof(produk) / sizeof(produk[0])); // Menggunakan sizeof untuk mendapatkan jumlah elemen array produk (total_produk);
+    tampilanWelcome(produk);
 
 ulangi_member:
 
     printf("Masukkan Kode Member (kosongkan jika bukan member): ");
-    fgets(kodeMember, sizeof(kodeMember), stdin);
-    kodeMember[strcspn(kodeMember, "\n")] = 0; // Menghapus newline dari input
+    // scanf(" %s", kodeMember);
+    // fgets(  kodeMember, sizeof(kodeMember), stdin);
+    gets(kodeMember);
+    kodeMember[strcspn(kodeMember, "\n")] = 0; // Menghapus newline
 
     if (strlen(kodeMember) == 0)
     {
-        ulang_input:
         printf("Anda belum menjadi member. Apakah ingin mendaftar? (Y/T): ");
         scanf(" %c", &kar);
-        getchar(); // Membersihkan buffer setelah scanf
+        getchar(); // Membersihkan buffer
 
         if (kar == 'y' || kar == 'Y')
         {
             daftarMember(members, &jumlahMember);
             goto ulangi_member;
-        } else if (kar == 't' || kar == 'T')
-        {
-            printf("Nama Pembeli: ");
-            fgets(name, sizeof(name), stdin);
-            name[strcspn(name, "\n")] = 0; // Menghapus newline dari input
-            /* code */
+            strcpy(name, members[jumlahMember - 1].nama); // Ambil nama member yang baru didaftarkan
         }
         else
         {
-            printf("Kode Member tidak valid.\n");
-            goto ulang_input;
+            printf("Nama Pembeli: ");
+            getchar(); // Membersihkan buffer sebelum fgets
+            fgets(name, sizeof(name), stdin);
+            name[strcspn(name, "\n")] = 0; // Menghapus newline
         }
     }
     else if (validasiMember(kodeMember, members, jumlahMember))
@@ -104,6 +102,7 @@ ulangi_member:
         {
             printf("Barang tidak valid, pilih nomor antara 1 sampai 3.\n");
             goto ulangi_pilih;
+
             // continue;
         }
 
@@ -131,9 +130,6 @@ ulangi_member:
     ringkasanBarang(produk, jumlah, 3);
 
     // printf("Total Pembelian : Rp %.2f", total_harga);
-    printf("| Total Pembelian :\t\t\t\t\t\t| Rp %.2f\t|\n", total_harga);
-    printf("+====+===============================+========+=================+===============+\n");
-
 
     if (validasiMember(kodeMember, members, jumlahMember))
     {
@@ -141,39 +137,36 @@ ulangi_member:
         total_harga -= diskon;
         printf("\nSELAMAT ANDA MENDAPATKAN DISKON SEBESAR 10 %%\n");
         printf("--------------------------------------------\n");
+        printf("Total harga setelah diskon: Rp %.2f\n", total_harga);
     }
     else
     {
         printf("\nMOHON MAAF ANDA BELUM BISA MENDAPATKAN DISKON\n");
-        printf("--------------------------------------------\n");
+        printf("\nTotal harga tanpa: Rp %.2f\n", total_harga);
     }
-    printf("\nTotal harga : Rp %.2f\n", total_harga);
 
     printf("======================================");
-
-    float grand_total = total_harga; // Simpan nilai awal total harga untuk referensi
-    float total_pembayaran = 0;
     do
     {
         printf("\nMasukkan jumlah uang yang dibayar: Rp ");
         scanf("%f", &pembayaran);
 
-        total_pembayaran += pembayaran; // Tambahkan ke total pembayaran kumulatif
-
-        if (total_pembayaran < total_harga)
+        if (pembayaran < total_harga)
         {
-            float sisa = total_harga - total_pembayaran; // Hitung sisa yang harus dibayar
-            printf("Uang yang dibayar kurang. Sisa yang harus dibayar: Rp %.2f\n", sisa);
+            total_harga -= pembayaran;
+            printf("Uang yang dibayar kurang. Sisa yang harus dibayar: Rp %.2f\n", total_harga);
             printf("======================================");
         }
         else
         {
-            kembalian = total_pembayaran - total_harga; // Hitung kembalian
+            kembalian = pembayaran - total_harga;
             printf("Kembalian: Rp %.2f\n", kembalian);
-            total_harga = 0; // Set total_harga menjadi 0 untuk keluar dari loop
+            total_harga = 0;
         }
     } while (total_harga > 0);
-    
+
+    printf("Terima kasih, %s telah belanja di toko kami.", name);
+
     printf("\nApakah ingin melakukan transaksi lagi? (Y/T): ");
     scanf(" %c", &kar);
     getchar();
@@ -183,33 +176,26 @@ ulangi_member:
     }
     else
     {
-        int total_qty = 0;
-        for (int i = 0; i < sizeof(produk) / sizeof(produk[0]); i++)
-        {
-            total_qty += jumlah[i]; // Tambahkan jumlah item dari setiap produk
-        }
-
-        tampilStruk(name, produk, jumlah, sizeof(produk) / sizeof(produk[0]), total_qty, grand_total, total_pembayaran, kembalian);
-
+        tampilStruk();
     }
 
     return 0;
 }
 
-void tampilanWelcome(Produk *produk, int total_produk)
+void tampilanWelcome(Produk *produk)
 {
     printf("\t\t\t==================================================================\n");
     printf("\t\t\t|                Selamat datang di Toko Berkah Jaya              |\n");
     printf("\t\t\t|                    Sedia Berbagai Komponen                     |\n");
     printf("\t\t\t|                          Elektronika                           |\n");
-    printf("\t\t\t+=====+===============================+=================+========+\n");
-    printf("\t\t\t| No  |        Nama Barang            |\tHarga\t\t|  Stok  |\n");
-    printf("\t\t\t+=====+===============================+=================+========+\n");
-    for (int i = 0; i < total_produk; i++)
+    printf("\t\t\t+====+===============================+==================+========+\n");
+    printf("\t\t\t| No |        Nama Barang            |\tHarga\t\t|  Stok  |\n");
+    printf("\t\t\t+====+===============================+==================+========+\n");
+    for (int i = 0; i < 3; i++)
     {
-        printf("\t\t\t| %d   | %-30s|\tRp %.2f\t| %-6d |\n", i + 1, produk[i].nama, produk[i].harga, produk[i].stok);
+        printf("\t\t\t| %d  | %-30s|\tRp %.2f\t| %-6d |\n", i + 1, produk[i].nama, produk[i].harga, produk[i].stok);
     }
-    printf("\t\t\t+=====+===============================+=================+========+\n");
+    printf("\t\t\t+====+===============================+==================+========+\n");
 }
 
 void tampilanRingkasan(char name[])
@@ -250,7 +236,7 @@ void daftarMember(Member *member, int *jumlahMember)
 {
     char kode[10], nama[50];
 
-    printf("Masukkan Kode Member Baru: ");
+    printf("\nMasukkan Kode Member Baru: ");
     scanf("%s", kode);
     getchar(); // Mengatasi masalah buffer
     printf("Masukkan Nama Member Baru: ");
@@ -266,35 +252,28 @@ void daftarMember(Member *member, int *jumlahMember)
 
 void ringkasanBarangStruk(char name[], Produk *produk, int *jumlah, int total_barang)
 {
-    
+    printf("\t\t\t|| Nama Pelanggan: %-45s ||\n", name);
+    printf("\t\t\t==================================================================\n");
     for (int i = 0; i < total_barang; i++)
     {
         if (jumlah[i] > 0)
         {
-            printf("\t\t\t|| %-60s ||\n", produk[i].nama);
-            printf("\t\t\t|| %-2dX %-43.2f Rp %.2f ||\n", jumlah[i], produk[i].harga, jumlah[i] * produk[i].harga);
+            printf("| %-2d | %-30s| %-6d |\tRp %.2f\t| Rp %.2f\t|\n",
+                   i + 1, produk[i].nama, jumlah[i], produk[i].harga, jumlah[i] * produk[i].harga);
         }
     }
-    printf("\t\t\t||--------------------------------------------------------------||\n");
+    printf("+====+===============================+========+=================+===============+\n");
 }
 
-void tampilStruk(char name[], Produk *produk, int *jumlah, int total_barang, int total_qty, float grand_total, float total_pembayaran, float kembalian)
+void tampilStruk()
 {
-    printf("\n");
-    printf("\t\t\t++==============================================================++\n");
+
+    printf("\t\t\t==================================================================\n");
     printf("\t\t\t||                       Toko Berkah Jaya                       ||\n");
     printf("\t\t\t||        Jalan Raya ITS - Kampus PENS, Sukolilo, Surabaya      ||\n");
     printf("\t\t\t||                        080-1234-5678                         ||\n");
-    printf("\t\t\t++==============================================================++\n");
-    printf("\t\t\t|| Nama Pelanggan : %s ||\n", name);
-    printf("\t\t\t||\t\t\t\t\t\t\t\t||\n");
+    printf("\t\t\t==================================================================\n");
     ringkasanBarangStruk(name, produk, jumlah, total_barang);
-    printf("\t\t\t|| Total Qty : %-47d  ||\n", total_qty);
-    printf("\t\t\t||\t\t\t\t\t\t\t\t||\n");
-    printf("\t\t\t|| Grand Total\t\t\t\t\t   Rp %-.2f ||\n", grand_total);
-    printf("\t\t\t|| Bayar (Cash)\t\t\t\t\t   Rp %-.2f ||\n", total_pembayaran);
-    printf("\t\t\t++--------------------------------------------------------------++\n");
-    printf("\t\t\t|| Kembalian\t\t\t\t\t   Rp %-.2f  ||\n", kembalian);
-    printf("\t\t\t||\t\t\t\t\t\t\t\t||\n");
-    printf("\t\t\t++==============================================================++\n");
+    printf("\t\t\t|| Nama Barang                 Jumlah           Harga           || \n");
+    printf("\t\t\t==================================================================\n");
 }

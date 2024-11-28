@@ -11,7 +11,7 @@ typedef struct
 
 typedef struct
 {
-    char kodeMember[10];
+    int kodeMember[10];
     char nama[50];
 } Member;
 
@@ -53,7 +53,6 @@ ulangi_member:
 
     if (strlen(kodeMember) == 0)
     {
-        ulang_input:
         printf("Anda belum menjadi member. Apakah ingin mendaftar? (Y/T): ");
         scanf(" %c", &kar);
         getchar(); // Membersihkan buffer setelah scanf
@@ -62,17 +61,12 @@ ulangi_member:
         {
             daftarMember(members, &jumlahMember);
             goto ulangi_member;
-        } else if (kar == 't' || kar == 'T')
+        }
+        else
         {
             printf("Nama Pembeli: ");
             fgets(name, sizeof(name), stdin);
             name[strcspn(name, "\n")] = 0; // Menghapus newline dari input
-            /* code */
-        }
-        else
-        {
-            printf("Kode Member tidak valid.\n");
-            goto ulang_input;
         }
     }
     else if (validasiMember(kodeMember, members, jumlahMember))
@@ -131,9 +125,6 @@ ulangi_member:
     ringkasanBarang(produk, jumlah, 3);
 
     // printf("Total Pembelian : Rp %.2f", total_harga);
-    printf("| Total Pembelian :\t\t\t\t\t\t| Rp %.2f\t|\n", total_harga);
-    printf("+====+===============================+========+=================+===============+\n");
-
 
     if (validasiMember(kodeMember, members, jumlahMember))
     {
@@ -248,10 +239,10 @@ int validasiMember(char *kodeMember, Member *member, int jumlahMember)
 
 void daftarMember(Member *member, int *jumlahMember)
 {
-    char kode[10], nama[50];
+    int kode[10], nama[50];
 
-    printf("Masukkan Kode Member Baru: ");
-    scanf("%s", kode);
+    printf("\nMasukkan Kode Member Baru: ");
+    scanf("%d", kode);
     getchar(); // Mengatasi masalah buffer
     printf("Masukkan Nama Member Baru: ");
     fgets(nama, sizeof(nama), stdin);
