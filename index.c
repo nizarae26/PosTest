@@ -40,11 +40,9 @@ int main()
     int total_barang = 0;
     int jumlah_barang;
     char kar;
-
 ulangi:
 
     tampilanWelcome(produk, sizeof(produk) / sizeof(produk[0])); // Menggunakan sizeof untuk mendapatkan jumlah elemen array produk (total_produk);
-
 ulangi_member:
 
     printf("Masukkan Kode Member (kosongkan jika bukan member): ");
@@ -97,6 +95,7 @@ ulangi_member:
     {
         int barang;
     ulangi_pilih:
+    ulang:
         printf("Pilih no barang (1-3): ");
         scanf(" %d", &barang);
 
@@ -107,7 +106,7 @@ ulangi_member:
             // continue;
         }
 
-    ulang:
+    
         printf("Masukkan Jumlah Barang : ");
         scanf("%d", &jumlah_barang);
 
@@ -133,7 +132,6 @@ ulangi_member:
     // printf("Total Pembelian : Rp %.2f", total_harga);
     printf("| Total Pembelian :\t\t\t\t\t\t| Rp %.2f\t|\n", total_harga);
     printf("+====+===============================+========+=================+===============+\n");
-
 
     if (validasiMember(kodeMember, members, jumlahMember))
     {
@@ -286,7 +284,7 @@ void tampilStruk(char name[], Produk *produk, int *jumlah, int total_barang, int
     printf("\t\t\t||        Jalan Raya ITS - Kampus PENS, Sukolilo, Surabaya      ||\n");
     printf("\t\t\t||                        080-1234-5678                         ||\n");
     printf("\t\t\t++==============================================================++\n");
-    printf("\t\t\t|| Nama Pelanggan : %s ||\n", name);
+    printf("\t\t\t|| Nama Pelanggan : %-43s ||\n", name);
     printf("\t\t\t||\t\t\t\t\t\t\t\t||\n");
     ringkasanBarangStruk(name, produk, jumlah, total_barang);
     printf("\t\t\t|| Total Qty : %-47d  ||\n", total_qty);
@@ -294,7 +292,7 @@ void tampilStruk(char name[], Produk *produk, int *jumlah, int total_barang, int
     printf("\t\t\t|| Grand Total\t\t\t\t\t   Rp %-.2f ||\n", grand_total);
     printf("\t\t\t|| Bayar (Cash)\t\t\t\t\t   Rp %-.2f ||\n", total_pembayaran);
     printf("\t\t\t++--------------------------------------------------------------++\n");
-    printf("\t\t\t|| Kembalian\t\t\t\t\t   Rp %-.2f  ||\n", kembalian);
+    printf("\t\t\t|| Kembalian\t\t\t\t\t   Rp %9.2f ||\n", kembalian);
     printf("\t\t\t||\t\t\t\t\t\t\t\t||\n");
     printf("\t\t\t++==============================================================++\n");
 }
