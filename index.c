@@ -15,7 +15,8 @@ typedef struct
     char nama[50];
 } Member;
 
-void tampilanWelcome(Produk *produk, int total_produk);
+void tampilanWelcome();
+void ulangiPilih(Produk *produk, int total_produk);
 void tampilanRingkasan(char name[]);
 void ringkasanBarang(Produk *produk, int *jumlah, int total_barang);
 int validasiMember(char *kodeMember, Member *member, int jumlahMember);
@@ -42,7 +43,7 @@ int main()
     char kar;
 ulangi:
 
-    tampilanWelcome(produk, sizeof(produk) / sizeof(produk[0])); // Menggunakan sizeof untuk mendapatkan jumlah elemen array produk (total_produk);
+    tampilanWelcome(); // Menggunakan sizeof untuk mendapatkan jumlah elemen array produk (total_produk);
 ulangi_member:
 
     printf("Masukkan Kode Member (kosongkan jika bukan member): ");
@@ -93,6 +94,7 @@ ulangi_member:
 
     do
     {
+        ulangiPilih(produk, sizeof(produk) / sizeof(produk[0]));
         int barang;
     ulangi_pilih:
     ulang:
@@ -153,6 +155,7 @@ ulangi_member:
     float total_pembayaran = 0;
     do
     {
+        
         printf("\nMasukkan jumlah uang yang dibayar: Rp ");
         scanf("%f", &pembayaran);
 
@@ -170,7 +173,7 @@ ulangi_member:
             printf("Kembalian: Rp %.2f\n", kembalian);
             total_harga = 0; // Set total_harga menjadi 0 untuk keluar dari loop
         }
-    } while (total_harga > 0);
+    } while (total_harga > 1);
     
     printf("\nApakah ingin melakukan transaksi lagi? (Y/T): ");
     scanf(" %c", &kar);
@@ -194,12 +197,16 @@ ulangi_member:
     return 0;
 }
 
-void tampilanWelcome(Produk *produk, int total_produk)
+void tampilanWelcome()
 {
     printf("\t\t\t==================================================================\n");
-    printf("\t\t\t|                Selamat datang di Toko Berkah Jaya              |\n");
-    printf("\t\t\t|                    Sedia Berbagai Komponen                     |\n");
-    printf("\t\t\t|                          Elektronika                           |\n");
+    printf("\t\t\t|                Selamat datang di Toko LLN Mart                 |\n");
+    printf("\t\t\t|                    Sedia Berbagai Accecories                   |\n");
+    printf("\t\t\t|                           Komputer                             |\n");
+    printf("\t\t\t==================================================================\n");
+}    
+
+void ulangiPilih(Produk *produk, int total_produk){
     printf("\t\t\t+=====+===============================+=================+========+\n");
     printf("\t\t\t| No  |        Nama Barang            |\tHarga\t\t|  Stok  |\n");
     printf("\t\t\t+=====+===============================+=================+========+\n");
@@ -208,6 +215,7 @@ void tampilanWelcome(Produk *produk, int total_produk)
         printf("\t\t\t| %d   | %-30s|\tRp %.2f\t| %-6d |\n", i + 1, produk[i].nama, produk[i].harga, produk[i].stok);
     }
     printf("\t\t\t+=====+===============================+=================+========+\n");
+
 }
 
 void tampilanRingkasan(char name[])
@@ -280,7 +288,7 @@ void tampilStruk(char name[], Produk *produk, int *jumlah, int total_barang, int
 {
     printf("\n");
     printf("\t\t\t++==============================================================++\n");
-    printf("\t\t\t||                       Toko Berkah Jaya                       ||\n");
+    printf("\t\t\t||                        Toko LLN Mart                         ||\n");
     printf("\t\t\t||        Jalan Raya ITS - Kampus PENS, Sukolilo, Surabaya      ||\n");
     printf("\t\t\t||                        080-1234-5678                         ||\n");
     printf("\t\t\t++==============================================================++\n");
